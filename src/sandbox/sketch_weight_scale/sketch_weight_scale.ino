@@ -1,8 +1,8 @@
 #include <HX711.h>
 //#include <Wire.h> 
 //#include <LiquidCrystal_I2C.h>
-//HX711 hx(9, 10, 128, 0.00127851);
-HX711 hx(9, 10, 128, 0.00246500);
+HX711 hx(9, 10, 128, 0.00127851); // NEW MEDAL
+//HX711 hx(9, 10, 128, 0.00246500); // OLD ONE
 //LiquidCrystal_I2C lcd(0x27,16,2); 
 void setup() {
 Serial.begin(9600);
