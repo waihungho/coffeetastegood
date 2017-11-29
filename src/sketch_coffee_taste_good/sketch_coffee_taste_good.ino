@@ -19,8 +19,8 @@ SoftwareSerial BTSerial(pinBtTX, pinBtRX); // TX | RX
 
 // Weight Scales(BEGIN)
 #include <HX711.h>
-HX711 scale(6, 7, 128, 0.00246500); // 6 (WHITE) | 7 (BLACK)
-//HX711 scale(A1, A0); // A1 : DT (BLACK) | A0 : SCK (WHITE)
+//HX711 scale(6, 7, 128, 0.00246500); // 6 (WHITE) | 7 (BLACK)
+HX711 scale(A1, A0); // A1 : DT (BLACK) | A0 : SCK (WHITE)
 // Weight Scales(END)
 
 // Coffee Status (BEGIN)
@@ -68,7 +68,7 @@ void loop() {  // put your main code here, to run repeatedly:
       //double weights = scale.get_units(10);
       double weights = 0;
       for (int i = 0; i < 10; i++) {
-        weights += scale.bias_read();
+//        weights += scale.bias_read();
       }
       weights = weights / 10;
        Serial.print("Weights :");Serial.println(weights);

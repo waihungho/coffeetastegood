@@ -1,0 +1,272 @@
+// ------------------------------------------
+//  PIN Configuration (BEGIN)
+// ------------------------------------------
+// Relay PIN:
+#define RELAY_PIN 11 
+
+// On/Off Switch PIN:
+#define SWITCH_PIN 7    
+
+// Weight PIN: (TO-BE-READ)
+//  Weight      Keyes 234
+//  RED         A+
+//  GREEN       A-
+//  WHITE       E+
+//  BLACK       E-
+//  N/A         B+
+//  N/A         B-
+#define WEIGHER_SCK_PIN 9
+#define WEIGHER_DOUT_PIN 10 
+
+// Rotary Encoder PIN:
+#define ROTARY_CLK_PIN 2    // IMPORTANT: Only Pin2 and Pin3 have interrupt for UNO
+#define ROTARY_CLK_INTERRUPT 0  // 0 for Pin2 interrupt
+#define ROTARY_DATA_PIN 3 
+// ------------------------------------------
+//  PIN Configuration (END)
+// ------------------------------------------
+
+// ------------------------------------------
+//  Software Configuration (BEGIN)
+// ------------------------------------------
+#define SERIAL_BAUD_RATE 9600
+#define RELAY_ON 1
+#define RELAY_OFF 0
+#define SWITCH_ON 0       // Press down is ON.
+#define SWITCH_OFF 1
+#define PRODUCTION 0      // 0: dont print message to Serial.print for performance.
+// ------------------------------------------
+//  Software Configuration (END)
+// ------------------------------------------
+
+// ------------------------------------------
+//  Software Status (BEGIN)
+// ------------------------------------------
+int softwareStatus;
+const int STATUS_INIT = 0;
+const int STATUS_START = 1;
+//const int STATUS_END = 2;
+// ------------------------------------------
+//  Software Status (END)
+// ------------------------------------------
+
+
+// ------------------------------------------
+//  Switch (BEGIN)
+// ------------------------------------------
+int switch_status;
+// ------------------------------------------
+//  Switch (END)
+// ------------------------------------------
+
+// ------------------------------------------
+//  WEIGHER (BEGIN)
+// ------------------------------------------
+#include <HX711.h>    // White Line seems not that OK.
+//HX711 hx(WEIGHER_SCK_PIN, WEIGHER_DOUT_PIN, 128, 0.00127851); // NEW MEDAL
+HX711 weigher(WEIGHER_SCK_PIN, WEIGHER_DOUT_PIN, 128, 0.00246500); // OLD ONE
+const unsigned int WEIGHER_READ_TIMES  = 3;
+#define BASE_TARGET_WEIGTH 15
+double target_weight = BASE_TARGET_WEIGTH;
+double final_weight = 0;
+// ------------------------------------------
+//  WEIGHER (END)
+// ------------------------------------------
+
+// ------------------------------------------
+//  Rotary Encoder (BEGIN)
+// ------------------------------------------
+static long rotary_count = 0;      
+volatile boolean rotary_turnDetected=false;
+volatile boolean rotary_up=false;
+// ------------------------------------------
+//  Rotary Encoder (END)
+// ------------------------------------------
+
+// ------------------------------------------
+//  LCD (BEGIN)
+// ------------------------------------------
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+// Set the LCD address to 0x27 for a 20 chars and 4 line display
+//LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x20 for a 16 chars and 2 line display
+//LiquidCrystal_I2C lcd(0x27);  // Set the LCD I2C address  (This LCD address: 0x3F)
+#define DIGITS_PER_LINE 16
+LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  // Set the LCD I2C address  (This LCD address: 0x27/0x3F)
+// ------------------------------------------
+//  LCD (END)
+// ------------------------------------------
+
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void setup() {
+  Serial.begin(SERIAL_BAUD_RATE);
+  initLCD();
+  initRelay();
+  initSwitch();
+  initRotaryEncoder();
+  initWeigher();
+  softwareStatus = STATUS_INIT;
+  displayLCD();
+  Serial.println("AUTO-WEIGHER READY");
+}
+
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void loop() {
+  if ( softwareStatus == STATUS_INIT ){ 
+    // -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //  Detect: Rotary Encoder (set the target weight only in the initial state)
+    // -------------------------------------------------------------------------------------------------------------------------------------------------------------------    
+    readRotaryEncoder();
+  }
+
+  // -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  //  Detect: Press switch
+  // -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  int thisStatus=readSwitch();  // Check for pressing switch
+  boolean changeStatus = false;
+  if ( thisStatus != switch_status ) {
+    switch_status = thisStatus;
+    changeStatus = true;
+    delay(200); // for preventing bounce
+  }
+  //Serial.print("SWITCH[1:OFF,0:ON]:");Serial.println(switch_status);
+  
+  // -------------------------------------------------------------------------------------------------------------------------------------------------------------------    
+  //  Switch ON: Turn on Relay 
+  // -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  if ( softwareStatus == STATUS_INIT && switch_status == SWITCH_ON  && changeStatus) {
+    printToSerialMsg();
+    softwareStatus = STATUS_START;
+    weigher.tare();
+    controlRelay(RELAY_ON);
+  // -------------------------------------------------------------------------------------------------------------------------------------------------------------------    
+  //  After Turn on Relay: Measure the weight
+  //  Once the weight >= Target Weight: Turn off Relay
+  // ------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+  } else if ( softwareStatus == STATUS_START && switch_status == SWITCH_ON ) {
+    final_weight = readWeigher();
+    printToSerialMsg();
+    if ( final_weight > target_weight ) {
+      controlRelay(RELAY_OFF);
+      softwareStatus = STATUS_INIT;
+    } 
+    displayLCD();
+  // -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  //  Switch Off: All Stop.
+  // -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  } else if ( switch_status == SWITCH_OFF ) {
+    controlRelay(RELAY_OFF);
+    softwareStatus = STATUS_INIT;
+    resetFinalWeight();
+  }
+
+}
+
+
+
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void initRelay(){
+  pinMode(RELAY_PIN, OUTPUT);
+  controlRelay(RELAY_OFF);
+}
+void controlRelay(int onOrOff){
+  if ( onOrOff == RELAY_ON) {
+    digitalWrite(RELAY_PIN, HIGH);  // Power ON
+  }else{
+    digitalWrite(RELAY_PIN, LOW);   // Power Off
+  }
+}
+
+void initSwitch(){
+  pinMode(SWITCH_PIN,INPUT);
+  switch_status = SWITCH_OFF;
+}
+int readSwitch(){
+  int switchState=0;
+  switchState = digitalRead(SWITCH_PIN);
+  return switchState;
+}
+
+void initWeigher(){
+  weigher.set_offset(41562);
+  weigher.tare();
+}
+
+double readWeigher(){
+  double sum0 = 0;
+  double sum1 = 0;
+  double each;
+  double each2;
+  double result = 0; 
+  for (int i = 0; i < WEIGHER_READ_TIMES; i++) { // read several times and take averages for accuracy.
+    //each = weigher.read();
+    // sum0 += each;
+    each2 = weigher.bias_read();
+    sum1 += each2;
+    //Serial.print("EACH:");Serial.println(each2);
+  }
+  result = sum1/WEIGHER_READ_TIMES;
+  return result;
+}
+
+
+void interruptRotaryEncoder ()  { // Interrupt service routine is executed when a HIGH to LOW transition is detected on CLK
+  rotary_up = (digitalRead(ROTARY_CLK_PIN) == digitalRead(ROTARY_DATA_PIN));
+  rotary_turnDetected = true;
+}
+void initRotaryEncoder(){
+  pinMode (ROTARY_CLK_PIN,INPUT);  // setup the pins as inputs
+  pinMode (ROTARY_DATA_PIN,INPUT);
+  attachInterrupt (ROTARY_CLK_INTERRUPT,interruptRotaryEncoder,CHANGE);   // interrupt 0 is always connected to pin 2 on Arduino UNO
+  rotary_count = 0;
+}
+
+void readRotaryEncoder(){
+  if (rotary_turnDetected)  {        // do this only if rotation was detected
+    if (rotary_up)
+      rotary_count--;
+    else
+      rotary_count++;
+    rotary_turnDetected = false;          // do NOT repeat IF loop until new rotation detected
+    calcTargetWeigth();
+    //Serial.println(rotary_count);
+    //Serial.print("[c]");Serial.println(c);
+    //Serial.print("[d]");Serial.println(d);
+    resetFinalWeight();
+    printToSerialMsg();
+  }
+}
+void calcTargetWeigth(){
+  target_weight = BASE_TARGET_WEIGTH + (rotary_count/10.00);
+}
+void resetFinalWeight(){
+  final_weight =0;
+  displayLCD();
+}
+void printToSerialMsg(){
+  if ( PRODUCTION==0){
+    Serial.print("[TARGET_WEIGHT]");Serial.print(target_weight,1);Serial.print(" g ");Serial.print("[NOW_WEIGHT]");Serial.println(final_weight);
+  }
+}
+void initLCD(){
+  lcd.begin(20,4);
+  lcd.backlight();
+  lcd.home ();                   // go home
+  lcd.print("Loading");
+}
+void displayLCD() {
+  int i;
+  String printFirstLine = String("TARGET: ") +  target_weight + "g";
+  for ( i = sizeof(printFirstLine); i <= DIGITS_PER_LINE; i++) // Clearing the previous message on LED.
+    printFirstLine += " ";
+  lcd.home();
+  lcd.print(printFirstLine);
+
+  String printSecondLine = String("NOW: ") + final_weight + "g";
+  for ( i = sizeof(printSecondLine); i < DIGITS_PER_LINE; i++)
+    printSecondLine += " ";
+  lcd.home();
+  lcd.setCursor(0, 1);
+  lcd.print(printSecondLine);
+}
+

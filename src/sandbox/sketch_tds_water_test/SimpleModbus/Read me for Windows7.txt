@@ -1,0 +1,58 @@
+Simply Modbus programs in Windows 7 :
+
+The Simply Modbus programs were around long before Windows 7 and work best with XP.  
+There are some compatibility issues with Windows 7.  
+Here are some ways to get around it.
+
+Start by installing version 7 or higher of the Simply Modbus program.
+
+1. Find or create a shortcut to the SimplyModbus program.
+2. Right click on the icon and select Properties.
+3. Select the "Compatibility" tab.
+4. Check "Run this program in compatibility mode for:"
+5. Select "Windows XP (Service Pack 3)"
+6. Check "Run this program as an adminstrator"
+
+Error-1073807202 may appear for some  users. If so, the program cannot find the VISA serial port drivers.
+Downloading and installing NI-VISA run time engine 4.2 from the NI website should resolve the error. 
+http://www.ni.com/download/ni-visa-run-time-engine-4.2/832/en/ 
+
+The programs may also work in Windows7 using virtual XP mode, a free download from Microsoft.
+Here's a link to a 4 minute video The Basics - Windows 7 Virtual XP Mode http://www.youtube.com/watch?v=9BrhIkDjvQo
+
+------------
+You can download and install multiple versions of the programs to see how they each behave without removing the older ones.  
+This allows you try them all and use the version that works best for you. 
+All versions of the same type of software (RTU Master) will use the existing license if already installed on the PC.
+
+www.simplymodbus.ca/download.htm
+
+Version 5 Compiler:
+        Simply Modbus Master 6.4.1       1.70 MB    www.simplymodbus.ca/SimplyModbusMaster6.4.1.zip
+        Simply Modbus Slave 2.1          1.74 MB    www.simplymodbus.ca/SimplyModbusSlave2.1.zip
+        Simply Modbus TCP Client 1.4     1.65 MB    www.simplymodbus.ca/SimplyModbusTCPclient1.4.zip
+                - small zip file downloads
+                - stand alone exe file, no install program
+                - Master and Slave need 'serpdrv' serial port driver file (in zip)
+                - Known issues:   The programs each shows 2 instances in the task bar while running, this is normal. 
+                                           Some users experience these version quitting by themselves,
+                                           or one of the taskbar instances not closing and requiring an 'end task' to close properly.
+                                           If this is a problem, the version 7 compiled program should help.
+
+Version 7 Compiler:
+        Simply Modbus Master 7.1.2        8.59 MB   www.simplymodbus.ca/SimplyModbusMaster7.1.2Install.zip
+        Simply Modbus Slave 7.1           8.88 MB   www.simplymodbus.ca/SimplyModbusSlave7.1Install.zip
+        Simply Modbus TCP Client 7.1      8.60 MB   www.simplymodbus.ca/SimplyModbusTCPclient7.1Install.zip
+                - larger zip file downloads
+                - run setup.exe to install, program is then selected from the start menu
+
+
+Version 2014 Compiler:
+        Simply Modbus Master 8.0           118 MB   www.simplymodbus.ca/SMM8.0.zip
+        Simply Modbus Slave 8.0            118 MB   www.simplymodbus.ca/SMS8.0.zip
+        Simply Modbus TCP Client 8.0      70.7 MB   www.simplymodbus.ca/SMT8.0.zip
+                - much larger zip file downloads
+                - run setup.exe to install, program is then selected from the start menu
+                - installs include the 2014 Runtime Engine.
+                - Master and Slave also include the install for VISA 14.0.1 Serial Port drivers.
+

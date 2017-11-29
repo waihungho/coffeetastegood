@@ -1,0 +1,187 @@
+#include <Servo.h> 
+
+Servo myservo;
+Servo myservo2;
+
+
+void setup() 
+{ 
+
+  Serial.begin(9600);
+
+  myservo.attach(9, 500, 2400); // 修正脈衝寬度範圍
+  myservo2.attach(4, 500, 2400); // 修正脈衝寬度範圍
+
+  myservo.write(90); // 一開始先置中90度
+  myservo2.write(90); // 一開始先置中90度
+
+  delay(3000);
+    Serial.println("Ready and Go!");
+} 
+
+void goVertical(){  // 直線移動
+    // Serial.println("loop");
+  int delayInterval=300;
+  int left=0;
+  int right=0;
+  Serial.println("First");
+  int startInt = 10;//0;
+  int endInt = 15;//19;
+  for(int i = startInt; i < endInt; i++){ // 16
+      Serial.println(i);
+    left=i*100+500;
+    right=(19-i)*100+500;
+    myservo.writeMicroseconds(left); // 直接以脈衝寬度控制
+    myservo2.writeMicroseconds(right); // 直接以脈衝寬度控制
+        delay(delayInterval);
+  }
+  Serial.println("Second");
+  for(int i = endInt;  i >startInt; i--){ // 10
+    Serial.println(i);
+    left=i*100+500;
+    right=(19-i)*100+500;
+    myservo.writeMicroseconds(left); // 直接以脈衝寬度控制
+    myservo2.writeMicroseconds(right); // 直接以脈衝寬度控制
+        delay(delayInterval);
+  }
+  
+}
+
+void goHorizontal(){
+  int delayInterval=300;
+  int left=0;
+  int right=0;
+  Serial.println("First");
+  int startInt = 4;//0;
+  int endInt = 15;//19;
+  for(int i = startInt; i < endInt; i++){ // 16
+      Serial.println(i);
+    left=i*100+500;
+    right=(19-i)*100+500;
+    myservo.writeMicroseconds(left); // 直接以脈衝寬度控制
+    myservo2.writeMicroseconds(left); // 直接以脈衝寬度控制
+        delay(delayInterval);
+  }
+  Serial.println("Second");
+  for(int i = endInt;  i >startInt; i--){ // 10
+    Serial.println(i);
+    left=i*100+500;
+    right=(19-i)*100+500;
+    myservo.writeMicroseconds(left); // 直接以脈衝寬度控制
+    myservo2.writeMicroseconds(left); // 直接以脈衝寬度控制
+        delay(delayInterval);
+  }
+  
+}
+
+// 2100 --> 1500 --> 900
+ int leftServoLeft = 2100;
+ int leftServoCenter = 1500;
+ int leftServoRight = 900;
+ int rightServoLeft = 2100;
+ int rightServoCenter = 1500;
+ int rightServoRight = 900;
+ int leftServoCenterToCenter = leftServoCenter+300;
+ int rightServoCenterToCenter = rightServoCenter-300;
+int delaySec = 1000;
+void go2Center(){
+  Serial.println("Center");
+  myservo.writeMicroseconds(leftServoCenterToCenter); // 直接以脈衝寬度控制
+  myservo2.writeMicroseconds(rightServoCenterToCenter); // 直接以脈衝寬度控制
+  delay(delaySec);
+}
+void go2Top(){
+  Serial.println("Top");
+  myservo.writeMicroseconds(leftServoCenter); // 直接以脈衝寬度控制
+  myservo2.writeMicroseconds(rightServoCenter); // 直接以脈衝寬度控制
+  delay(delaySec);
+}
+void go2Bottom(){
+    Serial.println("Bottom");
+  myservo.writeMicroseconds(leftServoLeft-50); // 直接以脈衝寬度控制
+  myservo2.writeMicroseconds(rightServoRight+50); // 直接以脈衝寬度控制
+  delay(delaySec);
+}
+void go2Left(){
+  myservo2.writeMicroseconds(leftServoLeft); // 直接以脈衝寬度控制
+  myservo.writeMicroseconds(leftServoLeft); // 直接以脈衝寬度控制
+
+  delay(delaySec);
+}
+
+void go2Right(){
+  myservo.writeMicroseconds(leftServoRight); // 直接以脈衝寬度控制
+  myservo2.writeMicroseconds(leftServoRight); // 直接以脈衝寬度控制
+  delay(delaySec);
+}
+
+void loop() 
+{
+ //goVertical();
+ //goHorizontal();
+
+
+//  go2Top();
+//  delay(5000);
+//
+//  go2Center();
+//  delay(5000);
+//  
+//  go2Bottom();
+//  delay(5000);
+
+  go2Center();
+  go2Bottom();  
+  go2Left();
+  go2Top();
+  go2Right();
+  go2Bottom();
+
+
+//// Top
+//myservo.writeMicroseconds(leftServoCenter); // 直接以脈衝寬度控制
+//myservo2.writeMicroseconds(rightServoCenter); // 直接以脈衝寬度控制
+//delay(1000);
+//
+//// Center
+//go2Center();
+//
+//// Bottom
+//myservo.writeMicroseconds(leftServoLeft); // 直接以脈衝寬度控制
+//myservo2.writeMicroseconds(rightServoRight); // 直接以脈衝寬度控制
+//delay(1000);
+
+
+//// Top
+//myservo.writeMicroseconds(leftServoCenter); // 直接以脈衝寬度控制
+//myservo2.writeMicroseconds(rightServoCenter); // 直接以脈衝寬度控制
+//delay(1000);
+//
+//// Left 
+//myservo.writeMicroseconds(leftServoLeft); // 直接以脈衝寬度控制
+//myservo2.writeMicroseconds(leftServoLeft); // 直接以脈衝寬度控制
+//delay(1000);
+//
+//// Bottom
+//myservo.writeMicroseconds(leftServoLeft); // 直接以脈衝寬度控制
+//myservo2.writeMicroseconds(rightServoRight); // 直接以脈衝寬度控制
+//delay(1000);
+//
+//// Right 
+//myservo.writeMicroseconds(leftServoRight); // 直接以脈衝寬度控制
+//myservo2.writeMicroseconds(leftServoRight); // 直接以脈衝寬度控制
+//delay(1000);
+
+//  
+//  for(int i = 500; i <= 2400; i+=100){
+//    myservo.writeMicroseconds(i); // 直接以脈衝寬度控制
+//    myservo2.writeMicroseconds(i); // 直接以脈衝寬度控制
+//    delay(300);
+//  }
+//
+//  for(int i = 2400; i >= 500; i-=100){
+//    myservo.writeMicroseconds(i);
+//myservo2.writeMicroseconds(i); // 直接以脈衝寬度控制
+//    delay(300);
+//  }
+}

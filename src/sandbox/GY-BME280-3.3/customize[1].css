@@ -1,0 +1,20 @@
+.EULAPage #GuideLine .textblock {
+ text-align:right;
+}
+.dir_rtl .EULAPage #GuideLine .textblock {
+ text-align:left;
+}
+
+.EULAPage #GuideLine {
+	padding:3px; /*Originally 6px; try lesser value if overlapping with Continue Button*/
+}
+
+.intro{
+	line-height:12px; /*originally 11px; try 13 px if still overlapping*/
+}
+
+
+.statusBar .status_label{
+        font-size:12px; /*you can use smaller font as well*/
+}
+

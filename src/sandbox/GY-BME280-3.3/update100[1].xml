@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <update minapplicable="16.0.0.0" maxapplicable="17.9.9999.9999" currentversion="17.3.6917.0607" rescan="1440" throttle="100">
+    <binary url="https://oneclient.sfx.ms/Win/Prod/17.3.6917.0607/OneDriveSetup.exe" sha256hash="HAXLefKVBfXdYX5BJA0OXYGm0uqAtCOtffrp+6GoFNw=" sha1hash="E0E7jD0qx3dWJNWvJaRhCPjDjKo=" />
+  </update>
+</root>

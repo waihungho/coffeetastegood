@@ -1,0 +1,40 @@
+#include <HX711.h>
+//#include <Wire.h> 
+//#include <LiquidCrystal_I2C.h>
+
+// White Line seems not that OK.
+// SCK-> Pin9
+// DOUT-> Pin 10
+
+//HX711 hx(9, 10, 128, 0.00127851); // NEW MEDAL
+HX711 hx(9, 10, 128, 0.00246500); // OLD ONE
+//LiquidCrystal_I2C lcd(0x27,16,2); 
+void setup() {
+Serial.begin(9600);
+  hx.set_offset(41562);
+  hx.tare();
+  //  lcd.init();                      // initialize the lcd 
+  //  lcd.backlight();
+  //  lcd.begin(16,2);b
+  Serial.println("READY");
+}
+void loop() {
+  delay(100);
+  double sum0 = 0;
+  double sum1 = 0;
+  double each;
+   double each2;
+  int readTimes = 10;
+  for (int i = 0; i < readTimes; i++) {
+    //each = hx.read();
+    // Serial.print("EACH:");Serial.println(each);
+   // sum0 += each;
+   each2 = hx.bias_read();
+    sum1 += each2;
+    Serial.print("EACH:");Serial.println(each2);
+
+    delay(1000);
+  }
+  Serial.print("SUM1:");Serial.print(sum1/readTimes);Serial.println("g");
+  delay(10);
+}

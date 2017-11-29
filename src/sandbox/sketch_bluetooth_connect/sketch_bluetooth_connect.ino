@@ -1,4 +1,5 @@
-
+//#include "ESP8266.h"
+//ESP8266 wifi(Serial1);
 
 int ledPin = 13; // 這裡設定所要閃爍的LED燈腳位
 //const int  buttonPin = 2;
@@ -7,8 +8,8 @@ int ledPin = 13; // 這裡設定所要閃爍的LED燈腳位
 //int buttonState = 0;         // current state of the button
 //int lastButtonState = 0;     // previous state of the button
 //
-#include  <SoftwareSerial.h>
-SoftwareSerial BTSerial(10, 11); // RX | TX
+//#include  <SoftwareSerial.h>
+//SoftwareSerial BTSerial(4, 5); // RX | TX
 //
 //
 #include <Wire.h>
@@ -27,22 +28,24 @@ SoftwareSerial BTSerial(10, 11); // RX | TX
 void setup() {
   // put your setup code here, to run once:
 //
-pinMode(ledPin, OUTPUT);
+//pinMode(ledPin, OUTPUT);
 //  pinMode(buttonPin, INPUT);
 //  Serial.begin(9600);
 
-   pinMode(9, OUTPUT);  // this pin will pull the HC-05 pin 34 (key pin) HIGH to switch module to AT mode
-  digitalWrite(9, HIGH);
+//   pinMode(9, OUTPUT);  // this pin will pull the HC-05 pin 34 (key pin) HIGH to switch module to AT mode
+//  digitalWrite(9, HIGH);
 //  Serial.begin(9600);
 //  Serial.println("Enter AT commands:");
 //  BTSerial.begin(38400);  // HC-05 default speed in AT command more
 
   Serial.begin(9600);   // Arduino起始鮑率：9600
 
-    //BTSerial.begin(38400); // HC-06 出廠的鮑率：每個藍牙晶片的鮑率都不太一樣，請務必確認
-BTSerial.begin(115200);
 
+//BTSerial.begin(115200);// 38400 / 115200 HC-06 出廠的鮑率：每個藍牙晶片的鮑率都不太一樣，請務必確認
 
+Serial1.begin(115200);
+
+Serial.println("Ready!");
 
 
 //
@@ -86,11 +89,17 @@ BTSerial.begin(115200);
 void loop() {
 
 //  // Keep reading from HC-05 and send to Arduino Serial Monitor
-  if (BTSerial.available())
-    Serial.write(BTSerial.read());
+
+
+//  if (BTSerial.available())
+//    Serial.write(BTSerial.read());
+
+  if ( Serial1.available())
+     Serial.write(Serial1.read());
+     
 //  // Keep reading from Arduino Serial Monitor and send to HC-05
   if (Serial.available())
-    BTSerial.write(Serial.read());
+    Serial1.write(Serial.read());
 
   
 //   put your main code here, to run repeatedly:
