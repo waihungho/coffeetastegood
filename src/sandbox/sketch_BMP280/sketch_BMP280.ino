@@ -36,7 +36,7 @@ BMP280 bmp280;
 void setup()
 {
   Serial.begin(9600);
-  Serial.println("Loading");
+  Serial.println("Loading l");
   if(!bmp280.init()){
     Serial.println("Device error!");
   }

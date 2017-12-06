@@ -39,10 +39,10 @@
 
 unsigned char chrRecv;
 byte bytCount = 0;
-int PIN_tx= A15;
-int PIN_rx = A14;
-//int PIN_tx= 11;
-//int PIN_rx = 10;
+//int PIN_tx= A15;
+//int PIN_rx = A14;
+int PIN_tx= 11;
+int PIN_rx = 10;
 SoftwareSerial myPMS7003(PIN_tx, PIN_rx); 
 
 void setup() {
