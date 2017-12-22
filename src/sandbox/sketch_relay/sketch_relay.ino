@@ -1,4 +1,4 @@
-int ledPin =  2;    // Relay connected to digital pin 2
+int ledPin =  10;    // Relay connected to digital pin 2
 
 void setup()   {
   Serial.begin(9600);

@@ -12,7 +12,7 @@
 //  Switch (BEGIN)
 // ------------------------------------------
 int switch_status;
-#define SWITCH_ON 0       // Press down is ON.
+#define SWITCH_ON 0      // Press down is ON.
 #define SWITCH_OFF 1
 // ------------------------------------------
 //  Switch (END)
@@ -21,7 +21,7 @@ int switch_status;
 // ------------------------------------------
 //  Relay (BEGIN)
 // ------------------------------------------
-#define RELAY_PIN 2 
+#define RELAY_PIN 12 
 #define RELAY_ON 1
 #define RELAY_OFF 0
 // ------------------------------------------
@@ -42,8 +42,8 @@ int software_status;
 
 
 
-#define MOTOR_X_DIRECTION_PIN 8
-#define MOTOR_X_MOVE_PIN 9
+#define MOTOR_X_DIRECTION_PIN 5  //CW+ 
+#define MOTOR_X_MOVE_PIN 6       //CLK+
 
 #define MOTOR_Y_DIRECTION_PIN 10  //CW+ 
 #define MOTOR_Y_MOVE_PIN 11       //CLK+
@@ -364,7 +364,7 @@ void loop(){
           delayMicroseconds(waitEachRound);
           motorMovingStatus ++;
         }
-motorMovingStatus=0;
+        motorMovingStatus=0;
         while (motorMovingStatus<10000) {
           digitalWrite(MOTOR_X_DIRECTION_PIN, MOTOR_X_MOVE_AWAYS);
           digitalWrite(MOTOR_X_MOVE_PIN, HIGH); 
