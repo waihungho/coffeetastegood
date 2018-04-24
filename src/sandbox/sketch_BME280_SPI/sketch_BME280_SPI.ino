@@ -1,10 +1,16 @@
 #include <SPI.h> 
 #include "cactus_io_BME280_SPI.h" 
 
-#define BME_SCK 13 // Serial Clock   SCL
-#define BME_MISO 12// Serial Data Out SDC 
-#define BME_MOSI 11 // Serial Data In  SDA
-#define BME_CS 10 // Chip Select CSB
+//  the pins are 50 (MISO), 51 (MOSI), 52 (SCK), and 53 (SS).
+//#define BME_SCK 52 // Serial Clock   SCL
+//#define BME_MISO 50// Serial Data Out SDC 
+//#define BME_MOSI 51 // Serial Data In  SDA
+//#define BME_CS 53 // Chip Select CSB
+
+#define BME_SCK 22 // Serial Clock   SCL
+#define BME_MISO 24// Serial Data Out SDC 
+#define BME_MOSI 26 // Serial Data In  SDA
+#define BME_CS 28 // Chip Select CSB
 
 // Create BME280 object 
 // BME280_SPI bme(BME_CS); // Using Hardware SPI 

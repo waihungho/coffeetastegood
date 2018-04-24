@@ -38,13 +38,11 @@
 // pull-up resistors on the data and clock signals.
 //
 
-#include <DS3231.h>     // library from http://www.rinkydinkelectronics.com/library.php?id=73
+#include <DS3231.h>
 
 // Init the DS3231 using the hardware interface
 //DS3231  rtc(SDA, SCL);
-DS3231  rtc(A1, A2);
-
-
+DS3231  rtc(7, 6);
 // Init a Time-data structure
 Time  t;
 
@@ -59,16 +57,31 @@ void setup()
   rtc.begin();
   
   // The following lines can be uncommented to set the date and time
-//  rtc.setDOW(FRIDAY);     // Set Day-of-Week to SUNDAY
-//  rtc.setTime(23, 00, 0);     // Hh:mn:ss   : Set the time to 12:00:00 (24hr format)
-//  rtc.setDate(21, 7, 2017);   // DD,MM,YYYY : Set the date to January 1st, 2014
+//  rtc.setDOW(TUESDAY);     // Set Day-of-Week to SUNDAY
+//  rtc.setTime(21, 44, 0);     // Set the time to 12:00:00 (24hr format)
+//  rtc.setDate(28, 4, 2018);   // Set the date to January 1st, 2014
 }
 
 void loop()
 {
   // Get data from the DS3231
   t = rtc.getTime();
-  
+
+ Serial.println("yyyy/mm/dd hh:nn:ss "); 
+ Serial.print(t.year, DEC);
+ Serial.print("/");
+ Serial.print(t.mon, DEC);
+ Serial.print("/");
+ Serial.print(t.date, DEC);
+ Serial.print(" ");
+ Serial.print(t.hour, DEC);
+ Serial.print(":");
+ Serial.print(t.min,DEC);
+ Serial.print(":");
+ Serial.print(t.sec, DEC);
+ Serial.println("");
+ 
+ 
   // Send date over serial connection
   Serial.print("Today is the ");
   Serial.print(t.date, DEC);

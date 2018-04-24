@@ -36,7 +36,7 @@ void setup() {
 // ** MISO - pin 12
 // ** CLK - pin 13
 // ** CS - pin 10
-
+pinMode(10, OUTPUT);
   // boolean begin(uint8_t csPin = SD_CHIP_SELECT_PIN, int8_t mosi = -1, int8_t miso = -1, int8_t sck = -1);
   if (!SD.begin(10)) {
     Serial.println("initialization failed!");
